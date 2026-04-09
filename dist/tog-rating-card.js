@@ -106,12 +106,13 @@ class TogRatingBaseCard extends HTMLElement {
     }).format(date);
   }
 
-  _renderForecastPanel(label, entity, togEntity) {
+  _renderForecastPanel(label, entity, togEntity, tempLabel) {
     if (!entity && !togEntity) {
       return `<div class="tog-panel"><div class="tog-overline">${label}</div><div class="tog-subtle">Configure ${label.toLowerCase()} entities.</div></div>`;
     }
 
-    const tempLabel = label.toLowerCase().includes("night") ? "Low" : "High";
+    const outdoorF = this._attribute(entity, "outdoor_temperature_f", null);
+    const outdoorDisplay = outdoorF !== null ? `${outdoorF}°F` : "-";
 
     return `
       <div class="tog-panel">
@@ -122,7 +123,7 @@ class TogRatingBaseCard extends HTMLElement {
             <div class="tog-headline">${this._friendlyState(entity)}</div>
           </div>
           <div class="tog-inline-facts">
-            ${this._renderInlineFact(tempLabel, `${this._attribute(entity, "outdoor_temperature_c", "-")}°C`)}
+            ${this._renderInlineFact(tempLabel, outdoorDisplay)}
           </div>
         </div>
         <div class="tog-subtle">${this._attribute(entity, "headline", "Forecast unavailable")}</div>
@@ -336,6 +337,12 @@ class TogRatingCurrentCard extends TogRatingBaseCard {
     }
 
     const title = this.config.title || "Current TOG";
+    const indoorF = this._attribute(currentRecommendation, "indoor_temperature_f", null);
+    const outdoorF = this._attribute(currentRecommendation, "outdoor_temperature_f", null);
+    const effectiveF = this._attribute(currentRecommendation, "effective_temperature_f", null);
+    const indoorHumidity = this._attribute(currentRecommendation, "indoor_humidity", null);
+    const outdoorHumidity = this._attribute(currentRecommendation, "outdoor_humidity", null);
+
     this.card.innerHTML = `
       ${this._styles()}
       <div class="tog-shell">
@@ -351,9 +358,10 @@ class TogRatingCurrentCard extends TogRatingBaseCard {
               <div class="tog-headline">${this._attribute(currentRecommendation, "headline", "No recommendation")}</div>
             </div>
             <div class="tog-inline-facts">
-              ${this._renderInlineFact("Indoor", `${this._attribute(currentRecommendation, "indoor_temperature_c", "-")}°C`)}
-              ${this._renderInlineFact("Outdoor", `${this._attribute(currentRecommendation, "outdoor_temperature_c", "-")}°C`)}
-              ${this._renderInlineFact("Effective", `${this._attribute(currentRecommendation, "effective_temperature_c", "-")}°C`)}
+              ${indoorF !== null ? this._renderInlineFact("Indoor", `${indoorF}°F`) : ""}
+              ${outdoorF !== null ? this._renderInlineFact("Outdoor", `${outdoorF}°F`) : ""}
+              ${effectiveF !== null ? this._renderInlineFact("Effective", `${effectiveF}°F`) : ""}
+              ${indoorHumidity !== null ? this._renderInlineFact("Humidity", `${indoorHumidity}%`) : ""}
             </div>
           </div>
           <div class="tog-subtle">${this._attribute(currentRecommendation, "reasoning", "Waiting for source entities")}</div>
@@ -409,8 +417,8 @@ class TogRatingForecastCard extends TogRatingBaseCard {
           <div class="tog-title">${this.config.title || "TOG Forecast"}</div>
         </div>
         <div class="tog-grid forecast">
-          ${this._renderForecastPanel("Day forecast", dayRecommendation, dayTog)}
-          ${this._renderForecastPanel("Night forecast", nightRecommendation, nightTog)}
+          ${this._renderForecastPanel("Tonight", nightRecommendation, nightTog, "Low")}
+          ${this._renderForecastPanel("Tomorrow", dayRecommendation, dayTog, "High")}
         </div>
       </div>
     `;
@@ -455,6 +463,11 @@ class TogRatingCard extends TogRatingBaseCard {
     const nightTog = this._stateObject(this.config.night_tog_entity);
     const nightRecommendation = this._stateObject(this.config.night_recommendation_entity);
 
+    const indoorF = this._attribute(currentRecommendation, "indoor_temperature_f", null);
+    const outdoorF = this._attribute(currentRecommendation, "outdoor_temperature_f", null);
+    const effectiveF = this._attribute(currentRecommendation, "effective_temperature_f", null);
+    const indoorHumidity = this._attribute(currentRecommendation, "indoor_humidity", null);
+
     this.card.innerHTML = `
       ${this._styles()}
       <div class="tog-shell">
@@ -471,9 +484,10 @@ class TogRatingCard extends TogRatingBaseCard {
                 <div class="tog-headline">${this._attribute(currentRecommendation, "headline", "No recommendation")}</div>
               </div>
               <div class="tog-inline-facts">
-                ${this._renderInlineFact("Indoor", `${this._attribute(currentRecommendation, "indoor_temperature_c", "-")}°C`)}
-                ${this._renderInlineFact("Outdoor", `${this._attribute(currentRecommendation, "outdoor_temperature_c", "-")}°C`)}
-                ${this._renderInlineFact("Effective", `${this._attribute(currentRecommendation, "effective_temperature_c", "-")}°C`)}
+                ${indoorF !== null ? this._renderInlineFact("Indoor", `${indoorF}°F`) : ""}
+                ${outdoorF !== null ? this._renderInlineFact("Outdoor", `${outdoorF}°F`) : ""}
+                ${effectiveF !== null ? this._renderInlineFact("Effective", `${effectiveF}°F`) : ""}
+                ${indoorHumidity !== null ? this._renderInlineFact("Humidity", `${indoorHumidity}%`) : ""}
               </div>
             </div>
             <div class="tog-subtle">${this._attribute(currentRecommendation, "reasoning", "Waiting for source entities")}</div>
@@ -481,8 +495,8 @@ class TogRatingCard extends TogRatingBaseCard {
             ${this._renderList(currentRecommendation)}
           </div>
           <div class="tog-grid forecast">
-            ${this._renderForecastPanel("Day forecast", dayRecommendation, dayTog)}
-            ${this._renderForecastPanel("Night forecast", nightRecommendation, nightTog)}
+            ${this._renderForecastPanel("Tonight", nightRecommendation, nightTog, "Low")}
+            ${this._renderForecastPanel("Tomorrow", dayRecommendation, dayTog, "High")}
           </div>
         </div>
       </div>
@@ -506,7 +520,7 @@ registerCard("tog-rating-card", TogRatingCard, {
   name: "TOG Rating Card",
   description: "Combined current and forecast TOG guidance.",
   preview: true,
-  documentationURL: "https://github.com/Anton2079/tog-rating"
+  documentationURL: "https://github.com/astrat1/lovelace-tog-rating-card"
 });
 
 registerCard("tog-rating-current-card", TogRatingCurrentCard, {
@@ -514,7 +528,7 @@ registerCard("tog-rating-current-card", TogRatingCurrentCard, {
   name: "TOG Current Card",
   description: "Compact current TOG recommendation card.",
   preview: true,
-  documentationURL: "https://github.com/Anton2079/tog-rating"
+  documentationURL: "https://github.com/astrat1/lovelace-tog-rating-card"
 });
 
 registerCard("tog-rating-forecast-card", TogRatingForecastCard, {
@@ -522,5 +536,5 @@ registerCard("tog-rating-forecast-card", TogRatingForecastCard, {
   name: "TOG Forecast Card",
   description: "Day and night forecast TOG guidance card.",
   preview: true,
-  documentationURL: "https://github.com/Anton2079/tog-rating"
+  documentationURL: "https://github.com/astrat1/lovelace-tog-rating-card"
 });
