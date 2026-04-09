@@ -2,6 +2,10 @@
 
 TOG Rating Card is a Home Assistant Lovelace dashboard card for displaying current and forecast child clothing guidance from the TOG Rating integration.
 
+## Companion repositories
+
+- Integration: https://github.com/Anton2079/tog-rating
+
 ## HACS repository type
 
 Add this repository to HACS as a `Dashboard` repository.
@@ -27,7 +31,9 @@ Because the repository name should start with `lovelace-`, HACS accepts `dist/to
 1. In HACS, add this repository as a custom repository.
 2. Choose repository type `Dashboard`.
 3. Install `TOG Rating Card`.
-4. Add one of these card types to Lovelace:
+4. Make sure the companion integration is installed from:
+   - https://github.com/Anton2079/tog-rating
+5. Add one of these card types to Lovelace:
    - `custom:tog-rating-current-card`
    - `custom:tog-rating-forecast-card`
    - `custom:tog-rating-card`
