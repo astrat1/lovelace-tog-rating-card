@@ -106,13 +106,23 @@ class TogRatingBaseCard extends HTMLElement {
     }).format(date);
   }
 
+  _tempSummary(entity) {
+    const indoorF = this._attribute(entity, "indoor_temperature_f", null);
+    const outdoorF = this._attribute(entity, "outdoor_temperature_f", null);
+    const effectiveF = this._attribute(entity, "effective_temperature_f", null);
+    if (indoorF === null || outdoorF === null || effectiveF === null) return "";
+    return `Effective temperature ${effectiveF}°F based on indoor ${indoorF}°F and outdoor ${outdoorF}°F`;
+  }
+
   _renderForecastPanel(label, entity, togEntity, tempLabel) {
     if (!entity && !togEntity) {
       return `<div class="tog-panel"><div class="tog-overline">${label}</div><div class="tog-subtle">Configure ${label.toLowerCase()} entities.</div></div>`;
     }
 
     const outdoorF = this._attribute(entity, "outdoor_temperature_f", null);
+    const effectiveF = this._attribute(entity, "effective_temperature_f", null);
     const outdoorDisplay = outdoorF !== null ? `${outdoorF}°F` : "-";
+    const effectiveDisplay = effectiveF !== null ? `${effectiveF}°F` : "-";
 
     return `
       <div class="tog-panel">
@@ -124,6 +134,7 @@ class TogRatingBaseCard extends HTMLElement {
           </div>
           <div class="tog-inline-facts">
             ${this._renderInlineFact(tempLabel, outdoorDisplay)}
+            ${this._renderInlineFact("Effective", effectiveDisplay)}
           </div>
         </div>
         <div class="tog-subtle">${this._attribute(entity, "headline", "Forecast unavailable")}</div>
@@ -341,7 +352,6 @@ class TogRatingCurrentCard extends TogRatingBaseCard {
     const outdoorF = this._attribute(currentRecommendation, "outdoor_temperature_f", null);
     const effectiveF = this._attribute(currentRecommendation, "effective_temperature_f", null);
     const indoorHumidity = this._attribute(currentRecommendation, "indoor_humidity", null);
-    const outdoorHumidity = this._attribute(currentRecommendation, "outdoor_humidity", null);
 
     this.card.innerHTML = `
       ${this._styles()}
@@ -354,7 +364,7 @@ class TogRatingCurrentCard extends TogRatingBaseCard {
           <div class="tog-overline">Current recommendation</div>
           <div class="tog-score-row">
             <div class="tog-score-main">
-              <div class="tog-score-value">${this._state(currentTog, "-")}</div>
+              <div class="tog-score-value">${this._state(currentTog, "-")} TOG</div>
               <div class="tog-headline">${this._attribute(currentRecommendation, "headline", "No recommendation")}</div>
             </div>
             <div class="tog-inline-facts">
@@ -364,7 +374,7 @@ class TogRatingCurrentCard extends TogRatingBaseCard {
               ${indoorHumidity !== null ? this._renderInlineFact("Humidity", `${indoorHumidity}%`) : ""}
             </div>
           </div>
-          <div class="tog-subtle">${this._attribute(currentRecommendation, "reasoning", "Waiting for source entities")}</div>
+          <div class="tog-subtle">${this._tempSummary(currentRecommendation)}</div>
           <div class="tog-message">${this._attribute(currentRecommendation, "general_message", "")}</div>
           ${this._renderList(currentRecommendation)}
           <div class="tog-summary-row">
@@ -480,7 +490,7 @@ class TogRatingCard extends TogRatingBaseCard {
             <div class="tog-overline">Current recommendation</div>
             <div class="tog-score-row">
               <div class="tog-score-main">
-                <div class="tog-score-value">${this._state(currentTog, "-")}</div>
+                <div class="tog-score-value">${this._state(currentTog, "-")} TOG</div>
                 <div class="tog-headline">${this._attribute(currentRecommendation, "headline", "No recommendation")}</div>
               </div>
               <div class="tog-inline-facts">
@@ -490,7 +500,7 @@ class TogRatingCard extends TogRatingBaseCard {
                 ${indoorHumidity !== null ? this._renderInlineFact("Humidity", `${indoorHumidity}%`) : ""}
               </div>
             </div>
-            <div class="tog-subtle">${this._attribute(currentRecommendation, "reasoning", "Waiting for source entities")}</div>
+            <div class="tog-subtle">${this._tempSummary(currentRecommendation)}</div>
             <div class="tog-message">${this._attribute(currentRecommendation, "general_message", "")}</div>
             ${this._renderList(currentRecommendation)}
           </div>
