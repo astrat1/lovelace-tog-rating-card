@@ -196,9 +196,9 @@ See the integration README for instructions on adding a second child instance.
 
 ## Companion Repositories
 
-- **TOG Rating integration (fork):** [github.com/astrat1/tog-rating](https://github.com/astrat1/tog-rating) — includes multi-mode support, toddler blanket mode, automatic base layer recommendations, milestone automations, and multi-child config flow
-- **TOG Rating integration (original):** [github.com/Anton2079/tog-rating](https://github.com/Anton2079/tog-rating)
-- **TOG Rating Card (original):** [github.com/Anton2079/lovelace-tog-rating-card](https://github.com/Anton2079/lovelace-tog-rating-card)
+- **TOG Rating integration (original):** [github.com/Anton2079/tog-rating](https://github.com/Anton2079/tog-rating) — original integration by Anton2079
+- **TOG Rating integration (fork):** [github.com/astrat1/tog-rating](https://github.com/astrat1/tog-rating) — adds multi-mode support, toddler blanket mode, automatic base layer recommendations, milestone automations, and multi-child config flow
+- **TOG Rating Card (original):** [github.com/Anton2079/lovelace-tog-rating-card](https://github.com/Anton2079/lovelace-tog-rating-card) — original card by Anton2079
 
 ---
 
