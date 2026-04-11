@@ -4,16 +4,6 @@ A Home Assistant Lovelace dashboard card that displays current and forecast slee
 
 ---
 
-## Screenshots
-
-![TOG Rating cards](assets/tog-rating-screenshot-main.png)
-
-![TOG Rating current and forecast cards](assets/tog-rating-screenshot.png)
-
-![TOG Rating entities and device view](assets/tog-rating-screenshot-2.png)
-
----
-
 ## Card Types
 
 ### `custom:tog-rating-card` — Combined Card
