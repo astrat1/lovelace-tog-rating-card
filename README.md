@@ -1,6 +1,8 @@
 # TOG Rating Card
 
-A Home Assistant Lovelace dashboard card that displays current and forecast sleep clothing recommendations from the [TOG Rating integration](https://github.com/Anton2079/tog-rating). Three card types are available — a compact current-conditions card, a forecast-only card, and a combined card showing all three.
+A Home Assistant Lovelace dashboard card that displays current and forecast sleep clothing recommendations from the TOG Rating integration. Three card types are available — a compact current-conditions card, a forecast-only card, and a combined card showing all three.
+
+Compatible with both the [original integration](https://github.com/Anton2079/tog-rating) and the [extended fork](https://github.com/astrat1/tog-rating).
 
 ---
 
@@ -8,7 +10,7 @@ A Home Assistant Lovelace dashboard card that displays current and forecast slee
 
 ### `custom:tog-rating-card` — Combined Card
 
-Displays current conditions, daytime forecast, and nighttime forecast in a single card. Recommended for a dedicated nursery dashboard view.
+Displays current conditions, tonight's forecast, and tomorrow's forecast in a single card, in that order. Recommended for a dedicated room dashboard view.
 
 ### `custom:tog-rating-current-card` — Current Conditions Card
 
@@ -123,8 +125,10 @@ Each recommendation panel shows:
 - **Headline** — short summary (e.g., "Standard setup", "Cold night — extra warm")
 - **TOG value** — numeric TOG rating of the sleep sack or blanket layer
 - **Clothing items** — ordered list of what to put on the child (base layer first, then sack or blanket)
-- **Effective temperature** — the blended and adjusted temperature used for the recommendation, in °F
-- **Outdoor temperature** — raw outdoor reading from the weather entity
+- **Indoor temperature** — live reading from the configured indoor sensor, in °F
+- **Outdoor temperature** — raw outdoor reading from the weather entity, in °F
+- **Effective temperature** — the blended and adjusted temperature used for tier selection, in °F
+- **Humidity** — indoor humidity percentage, if a humidity sensor is configured
 - **General message** — one-sentence explanation of why this tier was selected
 
 ---
@@ -156,8 +160,9 @@ card_mod:
 
 Add one card per child, each pointing to their own integration instance's sensor entities. The integration supports multiple named instances — each child gets their own set of sensors.
 
+**Child 1** (instance named "Nursery TOG"):
+
 ```yaml
-# Child 1 (instance named "Nursery TOG")
 type: custom:tog-rating-card
 title: Child 1 TOG
 current_tog_entity: sensor.nurserytog_current_tog
@@ -166,10 +171,11 @@ day_tog_entity: sensor.nurserytog_day_tog
 day_recommendation_entity: sensor.nurserytog_day_recommendation
 night_tog_entity: sensor.nurserytog_night_tog
 night_recommendation_entity: sensor.nurserytog_night_recommendation
+```
 
----
+**Child 2** (instance named "Room 2 TOG"):
 
-# Child 2 (instance named "Room 2 TOG")
+```yaml
 type: custom:tog-rating-card
 title: Child 2 TOG
 current_tog_entity: sensor.room2tog_current_tog
@@ -198,7 +204,7 @@ See the integration README for instructions on adding a second child instance.
 lovelace-tog-rating-card/
 ├── dist/
 │   └── tog-rating-card.js    # Compiled card — this is what HACS installs
-├── assets/                   # Screenshots used in this README
+├── assets/                   # Brand assets and images
 ├── hacs.json                 # HACS plugin metadata
 └── README.md
 ```
